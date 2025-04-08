@@ -1,23 +1,32 @@
 import time
+import threading
 import requests
+from flask import Flask, request, jsonify
+
 from adc_mcp3008 import MCP3008
 from light_sensor_led import LightSensorLED
 from soil_moisture_pump import SoilMoisturePump
 from temperature_humidity import TemperatureHumiditySensor
 
-# 센서 설정
-adc = MCP3008()
-light_sensor = LightSensorLED(adc, analog_channel=0)
-soil_sensor = SoilMoisturePump(adc, analog_channel=1, pump_in1=23, pump_in2=24)
-temp_humi_sensor = TemperatureHumiditySensor(pin=6)  # DHT11(board.D6)
+# Flask 서버 설정
+app = Flask(__name__)
 
-# 서버 설정
-SERVER_URL = "http://<YOUR_FLASK_SERVER_IP>:<PORT>/sensor_data"
+@app.route('/sensor_data', methods=['POST'])
+def receive_data():
+    data = request.json
+    print("Received JSON data:", data)
+    return jsonify({"status": "success"}), 200
 
-# 주기적으로 센서 데이터 측정 후 서버 전송
-def main():
+# 센서 측정 및 서버로 데이터 전송
+def sensor_loop():
+    adc = MCP3008()
+    light_sensor = LightSensorLED(adc, analog_channel=7)
+    soil_sensor = SoilMoisturePump(adc, analog_channel=0, pump_in1=23, pump_in2=24)
+    temp_humi_sensor = TemperatureHumiditySensor(pin=6)
+
+    SERVER_URL = "http://127.0.0.1:5000/sensor_data"  # 내부 루프백 주소
+
     while True:
-        # 각 센서로부터 데이터 수집
         light_level = light_sensor.read_light()
         light_sensor.control_led(threshold=500, light_level=light_level)
 
@@ -26,7 +35,6 @@ def main():
 
         temperature, humidity = temp_humi_sensor.read_data()
 
-        # JSON 데이터 생성
         data = {
             "temperature": temperature,
             "humidity": humidity,
@@ -42,8 +50,12 @@ def main():
         except requests.exceptions.RequestException as e:
             print(f"Failed to send data: {e}")
 
-        # 대기시간 60초
         time.sleep(60)
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    # 센서 측정 루프는 백그라운드 스레드에서 실행
+    sensor_thread = threading.Thread(target=sensor_loop, daemon=True)
+    sensor_thread.start()
+
+    # Flask 서버 실행
+    app.run(host='0.0.0.0', port=5000)

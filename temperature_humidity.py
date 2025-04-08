@@ -2,7 +2,7 @@ import adafruit_dht
 import board
 
 class TemperatureHumiditySensor:
-    def __init__(self, pin):
+    def __init__(self): #(self, pin)
         self.sensor = adafruit_dht.DHT11(board.D6)
     
     def read_data(self):
