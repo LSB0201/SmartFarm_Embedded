@@ -4,7 +4,7 @@ import time
 import os
 import mysql.connector
 
-SAVE_DIR = "/home/piserver/captured_images"
+SAVE_DIR = "/home/piserver/SmartFarm_Embedded/captured_images"
 DB_CONFIG = {
 	"host": "localhost",
 	"user": "piserver",
