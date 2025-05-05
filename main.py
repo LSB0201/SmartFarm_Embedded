@@ -32,4 +32,4 @@ if __name__ == "__main__":
             """
             insert_data(query, (temperature, humidity, soil_moisture, light_level))
 
-        time.sleep(5)
+        time.sleep(3600)

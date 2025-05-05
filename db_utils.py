@@ -3,8 +3,8 @@ import mysql.connector
 # MariaDB 연결 설정
 DB_CONFIG = {
     'host': 'localhost',
-    'user': 'pi',
-    'password': 'raspberry',
+    'user': 'piserver',
+    'password': '1234',
     'database': 'smart_farm'
 }
 
