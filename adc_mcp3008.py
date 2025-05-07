@@ -9,3 +9,6 @@ class MCP3008:
     def read_channel(self, channel):
         adc = self.spi.xfer2([1, (8 + channel) << 4, 0])
         return ((adc[1] & 3) << 8) + adc[2]
+    
+    def close(self):
+        self.spi.close()  # SPI 연결 해제

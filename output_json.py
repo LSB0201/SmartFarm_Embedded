@@ -3,6 +3,7 @@ from adc_mcp3008 import MCP3008
 from temperature_humidity import TemperatureHumiditySensor
 from soil_moisture_pump import SoilMoisturePump
 from light_sensor_led import LightSensorLED
+import RPi.GPIO as GPIO
 
 app = Flask(__name__)
 
@@ -18,6 +19,9 @@ def measure_sensors():
     temperature, humidity = temp_humid_sensor.read_data()
     soil_moisture = soil_moisture_pump.read_soil_moisture()
     light_level = light_sensor_led.read_light()
+
+    GPIO.cleanup()  # GPIO 리소스를 해제
+
 
     # 센서 데이터를 JSON 형식으로 준비
     sensor_data = {
