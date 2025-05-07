@@ -11,4 +11,4 @@ class MCP3008:
         return ((adc[1] & 3) << 8) + adc[2]
     
     def close(self):
-        self.spi.close()  # SPI 연결 해제
+        self.spi.close() #adc 점유해제
