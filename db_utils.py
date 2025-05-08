@@ -41,7 +41,7 @@ def get_latest_sensor_data():  #최신 센서값 조회 함수 추가
         cursor.execute("""
             SELECT temperature, humidity, soil_moisture, light_intensity
             FROM sensor_data
-            ORDER BY timestamp DESC
+            ORDER BY recorded_at DESC
             LIMIT 1
         """)  #최신 1개 레코드만 가져옴
         result = cursor.fetchone()
