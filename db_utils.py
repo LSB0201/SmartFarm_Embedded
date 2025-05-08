@@ -33,3 +33,21 @@ def get_thresholds():
     except mysql.connector.Error as err:
         print(f"DB Error: {err}")
         return (500, 300)
+    
+def get_latest_sensor_data():  #최신 센서값 조회 함수 추가
+    try:
+        conn = mysql.connector.connect(**DB_CONFIG)
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT temperature, humidity, soil_moisture, light_intensity
+            FROM sensor_data
+            ORDER BY timestamp DESC
+            LIMIT 1
+        """)  #최신 1개 레코드만 가져옴
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return result if result else {}
+    except mysql.connector.Error as err:
+        print(f"DB Error: {err}")
+        return {}
