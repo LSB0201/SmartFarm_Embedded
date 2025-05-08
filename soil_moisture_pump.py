@@ -27,3 +27,6 @@ class SoilMoisturePump:
             GPIO.output(self.pump_in2, GPIO.LOW)
         else:
             print("Soil moisture is sufficient")
+
+    def cleanup(self):  # ----------사용한 핀만 정리
+        GPIO.cleanup([self.pump_in1, self.pump_in2])

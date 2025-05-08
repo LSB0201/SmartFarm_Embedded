@@ -22,3 +22,6 @@ class LightSensorLED:
             print("Sufficient light. Turning LED OFF")
             self.pixels.fill((0, 0, 0))
             self.pixels.show()
+            
+    def cleanup(self):
+        GPIO.cleanup([self.led_pin])

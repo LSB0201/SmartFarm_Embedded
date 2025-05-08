@@ -1,5 +1,6 @@
 import adafruit_dht
 import board
+import RPi.GPIO as GPIO
 
 class TemperatureHumiditySensor:
     def __init__(self, pin):
@@ -18,3 +19,6 @@ class TemperatureHumiditySensor:
         except RuntimeError as error:
             print(f"Sensor read error: {error}")
             return None, None
+        
+    def cleanup(self):
+        GPIO.cleanup([self.pin])
