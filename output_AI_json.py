@@ -1,8 +1,6 @@
 from flask import Flask, jsonify
 from adc_mcp3008 import MCP3008
 from temperature_humidity import TemperatureHumiditySensor
-from soil_moisture_pump import SoilMoisturePump
-from light_sensor_led import LightSensorLED
 
 app = Flask(__name__)
 
