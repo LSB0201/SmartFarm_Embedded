@@ -20,5 +20,8 @@ class LightSensorLED:
             self.pixels.show()
         else:
             print("Sufficient light. Turning LED OFF")
-            self.pixels.fill((0, 0, 0))
-            self.pixels.show()
+            self.led_off()
+
+    def led_off(self):
+        self.pixels.fill((0, 0, 0))
+        self.pixels.show()

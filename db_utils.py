@@ -20,8 +20,13 @@ def insert_data(query, values):
     except mysql.connector.Error as err:
         print(f"DB Error: {err}")
 
+# 기준값 기본값 (토양수분: %, 조도: ADC 원시값 0~1023)
+DEFAULT_SOIL_MOISTURE_THRESHOLD = 30
+DEFAULT_LIGHT_INTENSITY_THRESHOLD = 300
+
 # 기준값 가져오는 함수
 def get_thresholds():
+    defaults = (DEFAULT_SOIL_MOISTURE_THRESHOLD, DEFAULT_LIGHT_INTENSITY_THRESHOLD)
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor()
@@ -29,10 +34,13 @@ def get_thresholds():
         result = cursor.fetchone()
         cursor.close()
         conn.close()
-        return result if result else (500, 300)  # 기본값 설정
+        if not result:
+            return defaults
+        # NULL 컬럼은 기본값으로 대체
+        return tuple(default if value is None else value for value, default in zip(result, defaults))
     except mysql.connector.Error as err:
         print(f"DB Error: {err}")
-        return (500, 300)
+        return defaults
     
 def get_latest_sensor_data():  #최신 센서값 조회 함수 추가
     try:

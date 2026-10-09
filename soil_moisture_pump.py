@@ -18,12 +18,18 @@ class SoilMoisturePump:
         return moisture
     
     def control_pump(self, threshold, moisture):
+        # threshold는 read_soil_moisture()와 같은 % 단위(0~100)
         if moisture < threshold:
             print("Soil is dry. Pump ON")
-            GPIO.output(self.pump_in1, GPIO.HIGH)
-            GPIO.output(self.pump_in2, GPIO.LOW)
-            time.sleep(5)
-            GPIO.output(self.pump_in1, GPIO.LOW)
-            GPIO.output(self.pump_in2, GPIO.LOW)
+            try:
+                GPIO.output(self.pump_in1, GPIO.HIGH)
+                GPIO.output(self.pump_in2, GPIO.LOW)
+                time.sleep(5)
+            finally:
+                self.pump_off()  # 중단/예외 시에도 반드시 펌프 정지
         else:
             print("Soil moisture is sufficient")
+
+    def pump_off(self):
+        GPIO.output(self.pump_in1, GPIO.LOW)
+        GPIO.output(self.pump_in2, GPIO.LOW)
